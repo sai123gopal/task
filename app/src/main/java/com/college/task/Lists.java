@@ -57,18 +57,27 @@ import java.util.Objects;
 
 public class Lists extends AppCompatActivity {
 
-    DatabaseReference uidref, boardref, cardref, due_dateref, fileref, descref;
-    Button add_acttachment;
-    FirebaseStorage Storage;
-    StorageReference storageRef;
-    FirebaseAuth mAuth;
-    FirebaseUser User;
+    private DatabaseReference uidref, boardref, cardref, due_dateref, fileref, descref, archived;
+    private Button add_acttachment;
+    private FirebaseStorage Storage;
+    private StorageReference storageRef;
+    private FirebaseAuth mAuth;
+    private FirebaseUser User;
     private String path;
-    ProgressDialog progressDialog;
-    RecyclerView recyclerView;
-    ArrayList<cards> cardlist;
-    cardsadapter cardsadapter;
-    String boardname;
+    private ProgressDialog progressDialog;
+    private RecyclerView recyclerView;
+    private ArrayList<cards> cardlist;
+    private cardsadapter cardsadapter;
+    private String boardname;
+    private final String TITLE = "TITLE";
+    private final String FILE = "FILE";
+    private final String DUE = "DUE";
+    private final String DESC = "DESC";
+    private final String ARCHIVED = "ARCHIVED";
+    private final String True = "true";
+    private final String False = "false";
+    private int archivedcount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,13 +96,7 @@ public class Lists extends AppCompatActivity {
         Storage = FirebaseStorage.getInstance();
         storageRef = Storage.getReference(User.getUid());
 
-        uidref = FirebaseDatabase.getInstance().getReference().child(User.getUid());
-        boardref = uidref.child(Objects.requireNonNull(boardname)).push();
-        cardref = boardref.child("TITLE");
-        due_dateref = boardref.child("DUE");
-        fileref = boardref.child("FILE");
-        descref = boardref.child("DESC");
-
+        final TextView Archived_count = findViewById(R.id.Archived_count);
         recyclerView = findViewById(R.id.recycle);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -103,21 +106,36 @@ public class Lists extends AppCompatActivity {
         rootref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Toast.makeText(Lists.this, "" + Objects.requireNonNull(dataSnapshot.child("BOARD TYPE").getValue()).toString(), Toast.LENGTH_SHORT).show();
+                int childerncount = (int) dataSnapshot.getChildrenCount();
+                uidref = FirebaseDatabase.getInstance().getReference().child(User.getUid());
+                boardref = uidref.child(Objects.requireNonNull(boardname)).child(String.valueOf(childerncount - 1));
+                cardref = boardref.child(TITLE);
+                due_dateref = boardref.child(DUE);
+                fileref = boardref.child(FILE);
+                descref = boardref.child(DESC);
+                archived = boardref.child(ARCHIVED);
                 cardlist = new ArrayList<>();
-                if (dataSnapshot.getChildrenCount() <= 1) {
+                if (childerncount <= 1) {
                     Toast.makeText(Lists.this, "No cards", Toast.LENGTH_SHORT).show();
                 } else {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        String url = ds.child("FILE").getValue(String.class);
-                        String due = ds.child("DUE").getValue(String.class);
-                        String title = ds.child("TITLE").getValue(String.class);
-                        String desc = ds.child("DESC").getValue(String.class);
+                        String url = ds.child(FILE).getValue(String.class);
+                        String due = ds.child(DUE).getValue(String.class);
+                        String title = ds.child(TITLE).getValue(String.class);
+                        String desc = ds.child(DESC).getValue(String.class);
+                        String archived = ds.child(ARCHIVED).getValue(String.class);
+                        Toast.makeText(Lists.this, "" + archived, Toast.LENGTH_SHORT).show();
+                        assert archived != null;
                         if (title != null) {
-                            cards card = new cards(url, due, title, desc);
-                            cardlist.add(card);
+                            if (!archived.equals(True)) {
+                                cards card = new cards(url, due, title, desc);
+                                cardlist.add(card);
+                            } else {
+                                archivedcount++;
+                            }
                         }
                     }
+                    Archived_count.setText("Archived (" + archivedcount + ")");
                     cardsadapter = new cardsadapter(cardlist);
                     recyclerView.setAdapter(cardsadapter);
                 }
@@ -127,28 +145,39 @@ public class Lists extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
+        });
 
+        Archived_count.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (archivedcount == 0) {
+                    Toast.makeText(Lists.this, "No archived found", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(Lists.this, archived.class);
+                    intent.putExtra("board_name", boardname);
+                    startActivity(intent);
+                }
+            }
 
         });
 
-
         final MaterialDatePicker.Builder datepicker = MaterialDatePicker.Builder.datePicker();
 
-        datepicker.setTitleText("Select date");
+        datepicker.setTitleText("Select Date");
         final MaterialDatePicker materialDatePicker = datepicker.build();
 
 
         findViewById(R.id.add_card).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int[] hours = new int[1];
-                final int[] min = new int[1];
                 final Dialog builder = new Dialog(Lists.this);
                 builder.setCancelable(false);
                 builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 builder.setContentView(R.layout.add_card);
+
+                final int[] hours = new int[1];
+                final int[] min = new int[1];
                 final EditText card_name = builder.findViewById(R.id.card_name);
                 final EditText description = builder.findViewById(R.id.card_desc);
                 final LinearLayout datepicker = builder.findViewById(R.id.date_picker_actions);
@@ -163,7 +192,7 @@ public class Lists extends AppCompatActivity {
                         builder.dismiss();
                     }
                 });
-
+                //Date and time picker
                 datepicker.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -174,6 +203,7 @@ public class Lists extends AppCompatActivity {
                 materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
                     @Override
                     public void onPositiveButtonClick(Object selection) {
+                        //Time picker
                         final String date = "Due : " + materialDatePicker.getHeaderText();
                         Calendar mcurrentTime = Calendar.getInstance();
                         final int[] hour = {mcurrentTime.get(Calendar.HOUR_OF_DAY)};
@@ -194,6 +224,7 @@ public class Lists extends AppCompatActivity {
                     }
                 });
 
+                //select attachment
                 add_acttachment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -211,7 +242,8 @@ public class Lists extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         progressDialog.show();
-                        final String card_na = card_name.getText().toString();
+                        progressDialog.setCancelable(false);
+                        final String card_na = card_name.getText().toString().trim().toUpperCase();
                         String due_time = datetext.getText().toString();
                         final String desc = description.getText().toString().trim();
                         if (card_na.isEmpty()) {
@@ -224,69 +256,45 @@ public class Lists extends AppCompatActivity {
                             }
                             due_time = due_time.replace("Due : ", "").trim();
                             progressDialog.show();
-                            boardref = uidref.child(Objects.requireNonNull(boardname)).push();
-                            cardref = boardref.child("TITLE");
-                            due_dateref = boardref.child("DUE");
-                            fileref = boardref.child("FILE");
-                            descref = boardref.child("DESC");
 
                             try {
-                                if (path.length() != 0) {
-                                    final Uri file = Uri.fromFile(new File(path));
-                                    final StorageReference storagefileref = storageRef.child(boardname + "/" + card_na + "/" + file.getLastPathSegment());
-                                    final UploadTask uploadTask = storagefileref.putFile(file);
-                                    final String finalDue_time = due_time;
-                                    final String finalDue_time1 = due_time;
-                                    uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                            progress = ((int) progress);
-                                            progressDialog.setMessage("Upload is " + progress + "% done");
+                                final Uri file = Uri.fromFile(new File(path));
+                                final StorageReference storagefileref = storageRef.child(boardname + "/" + card_na + "/" + file.getLastPathSegment());
+                                final UploadTask uploadTask = storagefileref.putFile(file);
+                                final String finalDue_time = due_time;
+                                uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                        progress = ((int) progress);
+                                        progressDialog.setMessage("Upload is " + progress + "% done");
 
-                                        }
-                                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            storagefileref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                @Override
-                                                public void onSuccess(final Uri uri) {
-                                                    fileref.setValue(uri.toString());
-                                                    due_dateref.setValue(finalDue_time);
-                                                    descref.setValue(desc);
-                                                    cardref.setValue(card_na.trim()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            recreate();
-                                                        }
-                                                    });
-                                                    Intent intent = new Intent(Lists.this, ReminderBroadcast.class);
-                                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(Lists.this, 0, intent, 0);
-                                                    intent.putExtra("Title", card_na);
-                                                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                                                    SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
-                                                    Date mDate = null;
-                                                    try {
-                                                        mDate = sdf.parse(finalDue_time1);
-                                                    } catch (ParseException e) {
-                                                        e.printStackTrace();
+                                    }
+                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        storagefileref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(final Uri uri) {
+                                                fileref.setValue(uri.toString());
+                                                due_dateref.setValue(finalDue_time);
+                                                descref.setValue(desc);
+                                                broadcast(finalDue_time);
+                                                archived.setValue(False);
+                                                cardref.setValue(card_na.trim()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        recreate();
                                                     }
-                                                    assert mDate != null;
-                                                    long timeInMilliseconds = mDate.getTime();
-                                                    Objects.requireNonNull(alarmManager).set(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
-                                                }
-                                            });
-
-
-                                        }
-                                    });
-                                }
-
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
                             } catch (Exception e) {
                                 progressDialog.dismiss();
                                 Toast.makeText(Lists.this, "Please select attachment", Toast.LENGTH_SHORT).show();
                             }
-
                         }
 
                     }
@@ -315,6 +323,7 @@ public class Lists extends AppCompatActivity {
     }
 
 
+    //Adapter for recycler view
     public class cardsadapter extends RecyclerView.Adapter<cardsadapter.holder> {
         ArrayList<cards> cardslist;
 
@@ -345,9 +354,20 @@ public class Lists extends AppCompatActivity {
             holder.archive.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Please wait..");
+                    boardref = uidref.child(Objects.requireNonNull(boardname)).child(String.valueOf(position));
+                    archived = boardref.child(ARCHIVED);
                     cardlist.remove(position);
                     notifyItemRemoved(position);
                     cardsadapter.notifyDataSetChanged();
+                    archived.setValue(True).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            progressDialog.dismiss();
+                            recreate();
+                        }
+                    });
                 }
             });
 
@@ -375,11 +395,12 @@ public class Lists extends AppCompatActivity {
         }
     }
 
+
+    //Notification intent
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void createnotification() {
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            CharSequence name = "hello";
+            CharSequence name = "Task";
             String desc = "Chanel";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("notify", name, importance);
@@ -389,6 +410,24 @@ public class Lists extends AppCompatActivity {
             Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
         }
 
+    }
+
+    //Broadcast
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void broadcast(String finalDue_time1) {
+        Intent intent = new Intent(Lists.this, ReminderBroadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(Lists.this, 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
+        Date mDate = null;
+        try {
+            mDate = sdf.parse(finalDue_time1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        assert mDate != null;
+        long timeInMilliseconds = mDate.getTime();
+        Objects.requireNonNull(alarmManager).set(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
     }
 
 }
