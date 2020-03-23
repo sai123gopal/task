@@ -19,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -67,8 +68,12 @@ public class home extends AppCompatActivity {
         findViewById(R.id.google_sign).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progress.show();
-                signIn();
+                if (Connection.isInternetAvailable(home.this)) {
+                    progress.show();
+                    signIn();
+                } else {
+                    Snackbar.make(findViewById(R.id.google), "No connection", 4000).show();
+                }
             }
         });
 

@@ -35,6 +35,7 @@
             <TextView
                 android:textColor="#121111"
                 android:textSize="17sp"
+                android:autoLink="all"
                 android:id="@+id/desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"></TextView>
@@ -42,6 +43,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_marginBottom="12dp"
+                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 

@@ -1,11 +1,8 @@
 package com.college.task;
 
-
-import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -14,13 +11,9 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,7 +22,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,7 +43,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DatabaseReference databaseReference, uereidref, boardref, boardnameref, boardtyperef;
+    private DatabaseReference databaseReference, uereidref, boardref, boardtyperef;
     ListView board_name;
     List<String> key;
     ArrayAdapter<String> arrayAdapter;
@@ -195,11 +187,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (!Connection.isInternetAvailable(MainActivity.this)) {
+            Snackbar.make(board_name, "No connection", 3000).show();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            finishAffinity();
-        }
+        finishAffinity();
 
     }
 

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -67,50 +68,48 @@ public class archived extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycle);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        uidref = FirebaseDatabase.getInstance().getReference().child(User.getUid());
 
-        DatabaseReference rootref = FirebaseDatabase.getInstance().getReference().child(mAuth.getCurrentUser().getUid()).child(boardname);
+        if (Connection.isInternetAvailable(archived.this)) {
+            DatabaseReference rootref = uidref.child(boardname);
 
-        rootref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int childerncount = (int) dataSnapshot.getChildrenCount();
-                uidref = FirebaseDatabase.getInstance().getReference().child(User.getUid());
-                boardref = uidref.child(Objects.requireNonNull(boardname)).child(String.valueOf(childerncount - 1));
-                cardref = boardref.child(TITLE);
-                due_dateref = boardref.child(DUE);
-                fileref = boardref.child(FILE);
-                descref = boardref.child(DESC);
-                archived = boardref.child(ARCHIVED);
-                cardlist = new ArrayList<>();
-                if (childerncount <= 1) {
-                    Toast.makeText(archived.this, "No cards", Toast.LENGTH_SHORT).show();
-                } else {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        String url = ds.child(FILE).getValue(String.class);
-                        String due = ds.child(DUE).getValue(String.class);
-                        String title = ds.child(TITLE).getValue(String.class);
-                        String desc = ds.child(DESC).getValue(String.class);
-                        String archived = ds.child(ARCHIVED).getValue(String.class);
-                        assert archived != null;
-                        if (title != null) {
-                            if (archived.equals(True)) {
-                                cards card = new cards(url, due, title, desc);
-                                cardlist.add(card);
+            rootref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int childerncount = (int) dataSnapshot.getChildrenCount();
+                    cardlist = new ArrayList<>();
+                    if (childerncount <= 1) {
+                        Toast.makeText(archived.this, "No cards", Toast.LENGTH_SHORT).show();
+                    } else {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            String url = ds.child(FILE).getValue(String.class);
+                            String due = ds.child(DUE).getValue(String.class);
+                            String title = ds.child(TITLE).getValue(String.class);
+                            String desc = ds.child(DESC).getValue(String.class);
+                            String archived = ds.child(ARCHIVED).getValue(String.class);
+                            assert archived != null;
+                            if (title != null) {
+                                if (archived.equals(True)) {
+                                    cards card = new cards(url, due, title, desc);
+                                    cardlist.add(card);
+                                }
                             }
                         }
+                        cardsadapter = new archivedcards(cardlist);
+                        recyclerView.setAdapter(cardsadapter);
                     }
-                    cardsadapter = new archivedcards(cardlist);
-                    recyclerView.setAdapter(cardsadapter);
+
+
                 }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-
+        } else {
+            Snackbar.make(recyclerView, "No connection", 4000).show();
+        }
 
 
     }
@@ -149,7 +148,11 @@ public class archived extends AppCompatActivity {
                 public void onClick(View v) {
                     progressDialog.show();
                     progressDialog.setMessage("Please wait..");
-                    boardref = uidref.child(Objects.requireNonNull(boardname)).child(String.valueOf(position));
+                    boardref = uidref.child(Objects.requireNonNull(boardname)).child(cardslist.get(position).getTITLE());
+                    cardref = boardref.child(TITLE);
+                    due_dateref = boardref.child(DUE);
+                    fileref = boardref.child(FILE);
+                    descref = boardref.child(DESC);
                     archived = boardref.child(ARCHIVED);
                     cardlist.remove(position);
                     notifyItemRemoved(position);

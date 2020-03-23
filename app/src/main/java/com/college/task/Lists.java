@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -99,21 +100,18 @@ public class Lists extends AppCompatActivity {
         final TextView Archived_count = findViewById(R.id.Archived_count);
         recyclerView = findViewById(R.id.recycle);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        uidref = FirebaseDatabase.getInstance().getReference().child(User.getUid());
 
 
-        DatabaseReference rootref = FirebaseDatabase.getInstance().getReference().child(mAuth.getCurrentUser().getUid()).child(boardname);
-
+        DatabaseReference rootref = uidref.child(boardname);
         rootref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //Getting number of items already have
                 int childerncount = (int) dataSnapshot.getChildrenCount();
-                uidref = FirebaseDatabase.getInstance().getReference().child(User.getUid());
-                boardref = uidref.child(Objects.requireNonNull(boardname)).child(String.valueOf(childerncount - 1));
-                cardref = boardref.child(TITLE);
-                due_dateref = boardref.child(DUE);
-                fileref = boardref.child(FILE);
-                descref = boardref.child(DESC);
-                archived = boardref.child(ARCHIVED);
+
+
                 cardlist = new ArrayList<>();
                 if (childerncount <= 1) {
                     Toast.makeText(Lists.this, "No cards", Toast.LENGTH_SHORT).show();
@@ -125,11 +123,14 @@ public class Lists extends AppCompatActivity {
                         String desc = ds.child(DESC).getValue(String.class);
                         String archived = ds.child(ARCHIVED).getValue(String.class);
                         assert archived != null;
+                        //Removing null objects
                         if (title != null) {
+                            //Checking if archived or not
                             if (!archived.equals(True)) {
                                 cards card = new cards(url, due, title, desc);
                                 cardlist.add(card);
                             } else {
+                                //Archived count
                                 archivedcount++;
                             }
                         }
@@ -245,6 +246,12 @@ public class Lists extends AppCompatActivity {
                         final String card_na = card_name.getText().toString().trim().toUpperCase();
                         String due_time = datetext.getText().toString();
                         final String desc = description.getText().toString().trim();
+                        boardref = uidref.child(Objects.requireNonNull(boardname)).child(card_na);
+                        cardref = boardref.child(TITLE);
+                        due_dateref = boardref.child(DUE);
+                        fileref = boardref.child(FILE);
+                        descref = boardref.child(DESC);
+                        archived = boardref.child(ARCHIVED);
                         if (card_na.isEmpty()) {
                             Toast.makeText(Lists.this, "Please enter card name", Toast.LENGTH_SHORT).show();
                         } else if (!due_time.contains("Due")) {
@@ -321,6 +328,13 @@ public class Lists extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!Connection.isInternetAvailable(Lists.this)) {
+            Snackbar.make(recyclerView, "No connection", 3000).show();
+        }
+    }
 
     //Adapter for recycler view
     public class cardsadapter extends RecyclerView.Adapter<cardsadapter.holder> {
@@ -355,11 +369,12 @@ public class Lists extends AppCompatActivity {
                 public void onClick(View v) {
                     progressDialog.show();
                     progressDialog.setMessage("Please wait..");
-                    boardref = uidref.child(Objects.requireNonNull(boardname)).child(String.valueOf(position));
+                    boardref = uidref.child(Objects.requireNonNull(boardname)).child(cardslist.get(position).getTITLE());
                     archived = boardref.child(ARCHIVED);
                     cardlist.remove(position);
                     notifyItemRemoved(position);
                     cardsadapter.notifyDataSetChanged();
+                    Snackbar.make(recyclerView, "Archived", 3000).show();
                     archived.setValue(True).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -404,7 +419,6 @@ public class Lists extends AppCompatActivity {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("notify", name, importance);
             channel.setDescription(desc);
-
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
         }
