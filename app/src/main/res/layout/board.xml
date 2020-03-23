@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:padding="10dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_below="@+id/cancel_button"
+        android:id="@+id/text"
+        android:text="Enter board name"
+        android:textSize="17sp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></TextView>
+
+    <EditText
+        android:layout_below="@+id/text"
+        android:id="@+id/board_name"
+        android:layout_centerHorizontal="true"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"></EditText>
+
+    <Button
+        android:text="ADD"
+        android:id="@+id/submit"
+        android:layout_margin="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/board_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></Button>
+
+    <ImageButton
+        android:id="@+id/cancel_button"
+        android:layout_margin="5dp"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/ic_clear_black_24dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        tools:ignore="PrivateResource"></ImageButton>
+
+
+</RelativeLayout>

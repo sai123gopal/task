@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Registration">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_height="wrap_content"
+        android:elevation="9dp"
+        android:layout_width="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_height="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            tools:targetApi="lollipop"
+            app:title="SIGN UP"
+            app:titleTextColor="#FFF"
+            android:id="@+id/toolbar"></androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_marginTop="70dp"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:hint="Email"
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></EditText>
+
+            <EditText
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:id="@+id/paswd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></EditText>
+
+            <EditText
+                android:hint="Conform Password"
+                android:inputType="textPassword"
+                android:id="@+id/paswd2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></EditText>
+
+            <Button
+
+                android:id="@+id/create"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:text="CREATE ACCOUNT"></Button>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <Button
+        android:layout_gravity="bottom|center_horizontal"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:text="already have account"
+        android:id="@+id/login"
+        android:layout_marginBottom="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></Button>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

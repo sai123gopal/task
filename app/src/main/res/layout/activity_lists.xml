@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#ECECEC"
+    android:layout_height="match_parent"
+    tools:context=".Lists">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_height="wrap_content"
+        android:elevation="9dp"
+        android:layout_width="match_parent"
+        tools:targetApi="lollipop">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_height="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            app:title="LIST"
+            app:titleTextColor="#FFF"
+            tools:targetApi="lollipop"
+            android:id="@+id/toolbar"></androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@+id/appbar"
+        android:layout_width="match_parent"
+        android:id="@+id/recycle"
+        android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_alignParentBottom="true"
+        android:id="@+id/add_card"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_add_black_24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+
+</RelativeLayout>

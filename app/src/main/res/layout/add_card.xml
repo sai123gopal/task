@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <ImageButton
+        android:id="@+id/cancel_button"
+        android:layout_gravity="end"
+        android:background="@drawable/ic_clear_black_24dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        tools:ignore="PrivateResource"></ImageButton>
+
+
+    <EditText
+        android:id="@+id/card_name"
+        android:layout_gravity="center_horizontal"
+        android:maxLength="50"
+        android:hint="Card name"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"></EditText>
+
+    <EditText
+        android:id="@+id/card_desc"
+        android:layout_gravity="center_horizontal"
+        android:maxLength="500"
+        android:hint="Description"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"></EditText>
+
+    <LinearLayout
+        android:clickable="true"
+        android:id="@+id/date_picker_actions"
+        android:layout_margin="10dp"
+        android:padding="5dp"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_gravity="center"
+            android:src="@drawable/ic_date_range_black_24dp"
+            android:layout_width="30dp"
+            android:layout_marginEnd="5dp"
+            android:layout_height="30dp"></ImageView>
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_gravity="center"
+            android:text="Select time and date"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></TextView>
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/add_attachment"
+        android:layout_gravity="center_horizontal"
+        android:text="Add attachment"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></Button>
+
+    <Button
+        android:id="@+id/done"
+        android:layout_gravity="center_horizontal"
+        android:text="done"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></Button>
+
+</LinearLayout>

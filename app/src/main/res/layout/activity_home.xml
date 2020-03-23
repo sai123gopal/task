@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".home"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/signin"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="70dp"
+            android:text="Sign In"
+            android:layout_above="@+id/google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></Button>
+
+        <Button
+            android:id="@+id/signup"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="70dp"
+            android:layout_alignParentEnd="true"
+            android:text="Sign Up"
+            android:layout_above="@+id/google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></Button>
+
+        <TextView
+            android:id="@+id/main_text"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:layout_centerInParent="true"
+            android:text="Hello !"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></TextView>
+
+        <TextView
+            android:textSize="20sp"
+            android:layout_below="@+id/main_text"
+            android:textColor="#000"
+            android:layout_centerHorizontal="true"
+            android:text="Ready to start?"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></TextView>
+
+        <ImageView
+            android:layout_above="@+id/main_text"
+            android:src="@drawable/ic_intro_image"
+            android:layout_marginHorizontal="50sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></ImageView>
+
+
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:id="@+id/google"
+            android:background="@color/colorPrimaryDark"
+            android:paddingVertical="13dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+
+                android:layout_gravity="center_horizontal"
+                android:textColor="#FFF"
+                android:text="One tap SignIn/SignUp"
+                android:textSize="18dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"></TextView>
+
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/google_sign"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"></com.google.android.gms.common.SignInButton>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>

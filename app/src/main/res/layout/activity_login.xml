@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Login"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_height="wrap_content"
+        android:elevation="9dp"
+        android:layout_width="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_height="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            app:title="SIGN IN"
+            app:titleTextColor="#FFF"
+            tools:targetApi="lollipop"
+            android:id="@+id/toolbar"></androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layout"
+            android:layout_marginTop="70dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:padding="15dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></EditText>
+
+            <EditText
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:id="@+id/paswd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></EditText>
+        </LinearLayout>
+
+        <Button
+            android:layout_below="@+id/layout"
+            android:layout_centerHorizontal="true"
+            android:text="sign in"
+            android:id="@+id/login"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginBottom="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></Button>
+
+        <Button
+            android:layout_above="@+id/new_account"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:text="Forgot password"
+            android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/f_passwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></Button>
+
+        <Button
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:text="Create new account"
+            android:layout_marginBottom="30dp"
+            android:id="@+id/new_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></Button>
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

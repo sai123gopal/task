@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "781160833110",
+    "firebase_url": "https://task-cbc6b.firebaseio.com",
+    "project_id": "task-cbc6b",
+    "storage_bucket": "task-cbc6b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781160833110:android:8f66a332f688f0aadd9bf7",
+        "android_client_info": {
+          "package_name": "com.college.task"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "781160833110-0muu3hhc3dm45orcjl4id9anj4t0feu8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMKRggQub_BbL0oZTQOCZVrnQHe_HkGuQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "781160833110-0muu3hhc3dm45orcjl4id9anj4t0feu8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
