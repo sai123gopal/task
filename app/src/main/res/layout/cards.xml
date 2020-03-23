@@ -27,12 +27,14 @@
             <TextView
                 android:id="@+id/title"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"></TextView>
 
             <TextView
-                android:textSize="15sp"
+                android:textColor="#121111"
+                android:textSize="17sp"
                 android:id="@+id/desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"></TextView>

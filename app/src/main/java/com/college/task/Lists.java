@@ -124,7 +124,6 @@ public class Lists extends AppCompatActivity {
                         String title = ds.child(TITLE).getValue(String.class);
                         String desc = ds.child(DESC).getValue(String.class);
                         String archived = ds.child(ARCHIVED).getValue(String.class);
-                        Toast.makeText(Lists.this, "" + archived, Toast.LENGTH_SHORT).show();
                         assert archived != null;
                         if (title != null) {
                             if (!archived.equals(True)) {

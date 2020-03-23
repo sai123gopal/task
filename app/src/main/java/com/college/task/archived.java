@@ -35,7 +35,6 @@ import java.util.Objects;
 public class archived extends AppCompatActivity {
 
     private DatabaseReference uidref, boardref, cardref, due_dateref, fileref, descref, archived;
-    private Button add_acttachment;
     private FirebaseAuth mAuth;
     private FirebaseUser User;
     private ProgressDialog progressDialog;
@@ -92,7 +91,6 @@ public class archived extends AppCompatActivity {
                         String title = ds.child(TITLE).getValue(String.class);
                         String desc = ds.child(DESC).getValue(String.class);
                         String archived = ds.child(ARCHIVED).getValue(String.class);
-                        Toast.makeText(archived.this, "" + archived, Toast.LENGTH_SHORT).show();
                         assert archived != null;
                         if (title != null) {
                             if (archived.equals(True)) {
