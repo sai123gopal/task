@@ -35,9 +35,9 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/profile_card"
                     android:layout_width="45dp"
+                    android:layout_marginVertical="7dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginVertical="5dp"
                     android:layout_marginEnd="5dp"
                     android:clickable="true"
                     app:cardCornerRadius="20dp">

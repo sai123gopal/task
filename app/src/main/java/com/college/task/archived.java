@@ -2,6 +2,7 @@ package com.college.task;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,6 +11,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -58,6 +62,11 @@ public class archived extends AppCompatActivity {
         setContentView(R.layout.activity_archived);
 
         boardname = Objects.requireNonNull(getIntent().getStringExtra("board_name")).trim();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        toolbar.setTitle(boardname.toUpperCase());
 
         mAuth = FirebaseAuth.getInstance();
         User = mAuth.getCurrentUser();
@@ -114,6 +123,22 @@ public class archived extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menulist, menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.back) {
+            super.onBackPressed();
+            return (true);
+        }
+        return true;
+    }
 
     public class archivedcards extends RecyclerView.Adapter<archivedcards.holder> {
         ArrayList<cards> cardslist;
