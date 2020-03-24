@@ -10,7 +10,6 @@ public class cards {
     private String TITLE;
     private String DESC;
 
-
     @NonNull
     @Override
     public String toString() {

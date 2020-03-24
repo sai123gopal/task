@@ -174,6 +174,7 @@ public class Lists extends AppCompatActivity {
                 final Dialog builder = new Dialog(Lists.this);
                 builder.setCancelable(false);
                 builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
                 builder.setContentView(R.layout.add_card);
 
                 final int[] hours = new int[1];
