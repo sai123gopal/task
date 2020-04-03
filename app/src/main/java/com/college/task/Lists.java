@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Dialog;
@@ -16,6 +18,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
@@ -109,6 +112,15 @@ public class Lists extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycle);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         uidref = FirebaseDatabase.getInstance().getReference().child(User.getUid());
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    0);
+        }
+
 
 
         DatabaseReference rootref = uidref.child(boardname);
@@ -441,7 +453,7 @@ public class Lists extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             CharSequence name = "Task";
             String desc = "Chanel";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel("notify", name, importance);
             channel.setDescription(desc);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
