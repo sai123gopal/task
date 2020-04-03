@@ -126,8 +126,6 @@ public class Lists extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int childerncount = (int) dataSnapshot.getChildrenCount();
-
-
                 cardlist = new ArrayList<>();
                 if (childerncount <= 1) {
                     Toast.makeText(Lists.this, "No cards", Toast.LENGTH_SHORT).show();
@@ -168,7 +166,7 @@ public class Lists extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (archivedcount == 0) {
-                    Toast.makeText(Lists.this, "No archived found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Lists.this, "No archived items found", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(Lists.this, archived.class);
                     intent.putExtra("board_name", boardname);
@@ -178,155 +176,12 @@ public class Lists extends AppCompatActivity {
 
         });
 
-        final MaterialDatePicker.Builder datepicker = MaterialDatePicker.Builder.datePicker();
-
-        datepicker.setTitleText("Select Date");
-        final MaterialDatePicker materialDatePicker = datepicker.build();
 
 
         findViewById(R.id.add_card).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog builder = new Dialog(Lists.this);
-                builder.setCancelable(false);
-                builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-                builder.setContentView(R.layout.add_card);
-
-                final int[] hours = new int[1];
-                final int[] min = new int[1];
-                final EditText card_name = builder.findViewById(R.id.card_name);
-                final EditText description = builder.findViewById(R.id.card_desc);
-                final LinearLayout datepicker = builder.findViewById(R.id.date_picker_actions);
-                final TextView datetext = builder.findViewById(R.id.date);
-                add_acttachment = builder.findViewById(R.id.add_attachment);
-                Button done = builder.findViewById(R.id.done);
-                final ImageButton cancle = builder.findViewById(R.id.cancel_button);
-
-                cancle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        builder.dismiss();
-                    }
-                });
-                //Date and time picker
-                datepicker.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
-                    }
-
-                });
-                materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
-                    @Override
-                    public void onPositiveButtonClick(Object selection) {
-                        //Time picker
-                        final String date = "Due : " + materialDatePicker.getHeaderText();
-                        Calendar mcurrentTime = Calendar.getInstance();
-                        final int[] hour = {mcurrentTime.get(Calendar.HOUR_OF_DAY)};
-                        int minute = mcurrentTime.get(Calendar.MINUTE);
-                        TimePickerDialog mTimePicker = new TimePickerDialog(Lists.this, new TimePickerDialog.OnTimeSetListener() {
-                            @SuppressLint("SetTextI18n")
-                            @Override
-                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                                datetext.setText(date + " " + selectedHour + ":" + selectedMinute);
-                                hours[0] = selectedHour;
-                                min[0] = selectedMinute;
-                            }
-
-                        }, hour[0], minute, false);
-                        mTimePicker.setTitle("Select Time");
-                        mTimePicker.show();
-
-                    }
-                });
-
-                //select attachment
-                add_acttachment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        new MaterialFilePicker()
-                                .withActivity(Lists.this)
-                                .withRequestCode(1)
-                                .withFilterDirectories(true)
-                                .withHiddenFiles(true)
-                                .start();
-                    }
-                });
-
-                done.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void onClick(View v) {
-                        progressDialog.show();
-                        progressDialog.setCancelable(false);
-                        final String card_na = card_name.getText().toString().trim().toUpperCase();
-                        String due_time = datetext.getText().toString();
-                        final String desc = description.getText().toString().trim();
-                        boardref = uidref.child(Objects.requireNonNull(boardname)).child(card_na);
-                        cardref = boardref.child(TITLE);
-                        due_dateref = boardref.child(DUE);
-                        fileref = boardref.child(FILE);
-                        descref = boardref.child(DESC);
-                        archived = boardref.child(ARCHIVED);
-                        if (card_na.isEmpty()) {
-                            Toast.makeText(Lists.this, "Please enter card name", Toast.LENGTH_SHORT).show();
-                        } else if (!due_time.contains("Due")) {
-                            Toast.makeText(Lists.this, "Please select due time", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                createnotification();
-                            }
-                            due_time = due_time.replace("Due : ", "").trim();
-                            progressDialog.show();
-
-                            try {
-                                final Uri file = Uri.fromFile(new File(path));
-                                final StorageReference storagefileref = storageRef.child(boardname + "/" + card_na + "/" + file.getLastPathSegment());
-                                final UploadTask uploadTask = storagefileref.putFile(file);
-                                final String finalDue_time = due_time;
-                                uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                        progress = ((int) progress);
-                                        progressDialog.setMessage("Upload is " + progress + "% done");
-
-                                    }
-                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        storagefileref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(final Uri uri) {
-                                                fileref.setValue(uri.toString());
-                                                due_dateref.setValue(finalDue_time);
-                                                descref.setValue(desc);
-                                                broadcast(finalDue_time);
-                                                archived.setValue(False);
-                                                cardref.setValue(card_na.trim()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        recreate();
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            } catch (Exception e) {
-                                progressDialog.dismiss();
-                                Toast.makeText(Lists.this, "Please select attachment", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                    }
-                });
-
-
-                builder.show();
-
-
+                showDialog();
             }
         });
 
@@ -474,6 +329,153 @@ public class Lists extends AppCompatActivity {
         assert mDate != null;
         long timeInMilliseconds = mDate.getTime();
         Objects.requireNonNull(alarmManager).set(AlarmManager.RTC_WAKEUP, timeInMilliseconds, pendingIntent);
+    }
+
+    private void showDialog() {
+        final MaterialDatePicker.Builder datepicker = MaterialDatePicker.Builder.datePicker();
+
+        datepicker.setTitleText("Select Date");
+        final MaterialDatePicker materialDatePicker = datepicker.build();
+
+
+        final Dialog builder = new Dialog(Lists.this);
+        builder.setCancelable(false);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        builder.setContentView(R.layout.add_card);
+
+        final int[] hours = new int[1];
+        final int[] min = new int[1];
+        final EditText card_name = builder.findViewById(R.id.card_name);
+        final EditText description = builder.findViewById(R.id.card_desc);
+        final LinearLayout datePickerLayout = builder.findViewById(R.id.date_picker_actions);
+        final TextView datetext = builder.findViewById(R.id.date);
+        add_acttachment = builder.findViewById(R.id.add_attachment);
+        Button done = builder.findViewById(R.id.done);
+        final ImageButton cancle = builder.findViewById(R.id.cancel_button);
+
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.dismiss();
+            }
+        });
+        //Date and time picker
+        datePickerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
+            }
+
+        });
+        materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick(Object selection) {
+                //Time picker
+                final String date = "Due : " + materialDatePicker.getHeaderText();
+                Calendar mcurrentTime = Calendar.getInstance();
+                final int[] hour = {mcurrentTime.get(Calendar.HOUR_OF_DAY)};
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker = new TimePickerDialog(Lists.this, new TimePickerDialog.OnTimeSetListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        datetext.setText(date + " " + selectedHour + ":" + selectedMinute);
+                        hours[0] = selectedHour;
+                        min[0] = selectedMinute;
+                    }
+
+                }, hour[0], minute, false);
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+
+            }
+        });
+
+        //select attachment
+        add_acttachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialFilePicker()
+                        .withActivity(Lists.this)
+                        .withRequestCode(1)
+                        .withFilterDirectories(true)
+                        .withHiddenFiles(true)
+                        .start();
+            }
+        });
+
+        done.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View v) {
+                progressDialog.show();
+                progressDialog.setCancelable(false);
+                final String card_na = card_name.getText().toString().trim().toUpperCase();
+                String due_time = datetext.getText().toString();
+                final String desc = description.getText().toString().trim();
+                boardref = uidref.child(Objects.requireNonNull(boardname)).child(card_na);
+                cardref = boardref.child(TITLE);
+                due_dateref = boardref.child(DUE);
+                fileref = boardref.child(FILE);
+                descref = boardref.child(DESC);
+                archived = boardref.child(ARCHIVED);
+                if (card_na.isEmpty()) {
+                    Toast.makeText(Lists.this, "Please enter card name", Toast.LENGTH_SHORT).show();
+                } else if (!due_time.contains("Due")) {
+                    Toast.makeText(Lists.this, "Please select due time", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        createnotification();
+                    }
+                    due_time = due_time.replace("Due : ", "").trim();
+                    progressDialog.show();
+
+                    try {
+                        final Uri file = Uri.fromFile(new File(path));
+                        final StorageReference storagefileref = storageRef.child(boardname + "/" + card_na + "/" + file.getLastPathSegment());
+                        final UploadTask uploadTask = storagefileref.putFile(file);
+                        final String finalDue_time = due_time;
+                        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                progress = ((int) progress);
+                                progressDialog.setMessage("Upload is " + progress + "% done");
+
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                storagefileref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(final Uri uri) {
+                                        fileref.setValue(uri.toString());
+                                        due_dateref.setValue(finalDue_time);
+                                        descref.setValue(desc);
+                                        broadcast(finalDue_time);
+                                        archived.setValue(False);
+                                        cardref.setValue(card_na.trim()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                recreate();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    } catch (Exception e) {
+                        progressDialog.dismiss();
+                        Toast.makeText(Lists.this, "Please select attachment", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+        });
+
+
+        builder.show();
     }
 
 }

@@ -17,12 +17,8 @@
     <list default="true" id="dc3fa385-8ec4-4519-a5c6-93f2951927dd" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/college/task/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/college/task/Connection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/college/task/Lists.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/college/task/Lists.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/college/task/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/college/task/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/college/task/Registration.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/college/task/Registration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/college/task/ReminderBroadcast.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/college/task/ReminderBroadcast.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/college/task/archived.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/college/task/archived.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -246,7 +242,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585922181345</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Task">
+      <created>1585928871637</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1585928871637</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="UpdateCopyrightCheckinHandler">

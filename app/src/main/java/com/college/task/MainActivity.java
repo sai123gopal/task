@@ -44,19 +44,20 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private DatabaseReference uereidref;
-    ListView board_name;
+    private ListView board_name;
     List<String> key;
     ArrayAdapter<String> arrayAdapter;
-    ProgressDialog progressDialog;
-    String board_name_text;
+    private ProgressDialog progressDialog;
+    private String board_name_text;
     private boolean isfirst;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
@@ -72,17 +73,7 @@ public class MainActivity extends AppCompatActivity {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
-                Snackbar.make(board_name, "SIGN OUT", 5000)
-                        .setAction("Yes", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                mAuth.signOut();
-                                Intent i = new Intent(MainActivity.this, home.class);
-                                startActivity(i);
-                            }
-                        })
-                        .setActionTextColor(Color.YELLOW)
-                        .show();
+                signOut();
             }
         });
 
@@ -130,56 +121,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.add_board).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog builder = new Dialog(MainActivity.this);
-                builder.setCancelable(false);
-                builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                builder.setContentView(R.layout.board);
-                final EditText ed = builder.findViewById(R.id.board_name);
-                Button submit = builder.findViewById(R.id.submit);
-                ImageButton cancel = builder.findViewById(R.id.cancel_button);
-                cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        builder.dismiss();
-                    }
-                });
-                submit.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.M)
-                    @Override
-                    public void onClick(View view) {
-                        board_name_text = ed.getText().toString().trim();
-                        if (board_name_text.isEmpty()) {
-                            Toast.makeText(MainActivity.this, "Enter board name", Toast.LENGTH_SHORT).show();
-                        } else if (board_name_text.length() < 3) {
-                            Toast.makeText(MainActivity.this, "Board name should at least 3 letters", Toast.LENGTH_SHORT).show();
-                        } else if (checkname(board_name_text)) {
-                            Toast.makeText(MainActivity.this, "Board name is already exist", Toast.LENGTH_SHORT).show();
-                        } else {
-                            builder.dismiss();
-                            String[] winner = {"PERSONAL", "TEAM"};
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setTitle("Select type");
-                            builder.setCancelable(false);
-                            builder.setItems(winner, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    if (which == 0) {
-                                        update("PERSONAL", board_name_text);
-                                    } else if (which == 1) {
-                                        update("TEAM", board_name_text);
-                                    }
-
-                                }
-                            });
-                            builder.show();
-                        }
-                    }
-
-
-                });
-                builder.show();
-
+                showDialog();
             }
         });
 
@@ -236,6 +178,71 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    private void showDialog() {
+        final Dialog builder = new Dialog(MainActivity.this);
+        builder.setCancelable(false);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.setContentView(R.layout.board);
+        final EditText ed = builder.findViewById(R.id.board_name);
+        Button submit = builder.findViewById(R.id.submit);
+        ImageButton cancel = builder.findViewById(R.id.cancel_button);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.dismiss();
+            }
+        });
+        submit.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View view) {
+                board_name_text = ed.getText().toString().trim();
+                if (board_name_text.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Enter board name", Toast.LENGTH_SHORT).show();
+                } else if (board_name_text.length() < 3) {
+                    Toast.makeText(MainActivity.this, "Board name should at least 3 letters", Toast.LENGTH_SHORT).show();
+                } else if (checkname(board_name_text)) {
+                    Toast.makeText(MainActivity.this, "Board name is already exist", Toast.LENGTH_SHORT).show();
+                } else {
+                    builder.dismiss();
+                    String[] winner = {"PERSONAL", "TEAM"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Select type");
+                    builder.setCancelable(false);
+                    builder.setItems(winner, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            if (which == 0) {
+                                update("PERSONAL", board_name_text);
+                            } else if (which == 1) {
+                                update("TEAM", board_name_text);
+                            }
+
+                        }
+                    });
+                    builder.show();
+                }
+            }
+
+
+        });
+        builder.show();
+    }
+
+    private void signOut() {
+        Snackbar.make(board_name, "SIGN OUT", 5000)
+                .setAction("Yes", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mAuth.signOut();
+                        Intent i = new Intent(MainActivity.this, home.class);
+                        startActivity(i);
+                    }
+                })
+                .setActionTextColor(Color.YELLOW)
+                .show();
+    }
 
 }
 
