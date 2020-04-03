@@ -8,7 +8,6 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import java.util.Objects;
 
 public class ReminderBroadcast extends BroadcastReceiver {
     @Override

@@ -43,7 +43,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DatabaseReference databaseReference, uereidref, boardref, boardtyperef;
+    private DatabaseReference uereidref;
     ListView board_name;
     List<String> key;
     ArrayAdapter<String> arrayAdapter;
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         uereidref = databaseReference.child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
 
         board_name = findViewById(R.id.list);
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "No boards", Toast.LENGTH_SHORT).show();
                 }
 
-                arrayAdapter = new ArrayAdapter<String>(MainActivity.this, R.layout.board_list, R.id.textView, key);
+                arrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.board_list, R.id.textView, key);
                 board_name.setAdapter(arrayAdapter);
                 board_name.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -204,8 +204,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void update(final String type, final String board_name_text) {
         progressDialog.show();
-        boardref = uereidref.child(board_name_text);
-        boardtyperef = boardref.child("BOARD TYPE");
+        DatabaseReference boardref = uereidref.child(board_name_text);
+        DatabaseReference boardtyperef = boardref.child("BOARD TYPE");
         boardtyperef.setValue(type).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

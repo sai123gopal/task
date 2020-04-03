@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,15 +19,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
-import static android.content.ContentValues.TAG;
-
 public class Registration extends AppCompatActivity {
 
 
     private EditText email;
     private EditText pass, cpass;
     private FirebaseAuth mAuth;
-    ProgressDialog pd;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

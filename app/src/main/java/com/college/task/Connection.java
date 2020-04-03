@@ -7,10 +7,9 @@ import android.net.NetworkInfo;
 import java.util.Objects;
 
 class Connection {
-    private static final String TAG = Connection.class.getSimpleName();
 
-    public static boolean isInternetAvailable(Context context) {
-        NetworkInfo info = (NetworkInfo) ((ConnectivityManager)
+    static boolean isInternetAvailable(Context context) {
+        NetworkInfo info = ((ConnectivityManager)
                 Objects.requireNonNull(context.getSystemService(Context.CONNECTIVITY_SERVICE))).getActiveNetworkInfo();
         if (info == null) {
             return false;

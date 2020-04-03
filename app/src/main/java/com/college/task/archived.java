@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,8 +30,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -40,8 +37,6 @@ import java.util.Objects;
 public class archived extends AppCompatActivity {
 
     private DatabaseReference uidref, boardref, cardref, due_dateref, fileref, descref, archived;
-    private FirebaseAuth mAuth;
-    private FirebaseUser User;
     private ProgressDialog progressDialog;
     private RecyclerView recyclerView;
     private ArrayList<cards> cardlist;
@@ -68,16 +63,16 @@ public class archived extends AppCompatActivity {
 
         toolbar.setTitle(boardname.toUpperCase());
 
-        mAuth = FirebaseAuth.getInstance();
-        User = mAuth.getCurrentUser();
-        assert User != null;
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        assert user != null;
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading...");
 
         recyclerView = findViewById(R.id.recycle);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        uidref = FirebaseDatabase.getInstance().getReference().child(User.getUid());
+        uidref = FirebaseDatabase.getInstance().getReference().child(user.getUid());
 
         if (Connection.isInternetAvailable(archived.this)) {
             DatabaseReference rootref = uidref.child(boardname);

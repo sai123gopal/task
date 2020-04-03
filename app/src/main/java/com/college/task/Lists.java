@@ -67,10 +67,7 @@ public class Lists extends AppCompatActivity {
 
     private DatabaseReference uidref, boardref, cardref, due_dateref, fileref, descref, archived;
     private Button add_acttachment;
-    private FirebaseStorage Storage;
     private StorageReference storageRef;
-    private FirebaseAuth mAuth;
-    private FirebaseUser User;
     private String path;
     private ProgressDialog progressDialog;
     private RecyclerView recyclerView;
@@ -99,19 +96,19 @@ public class Lists extends AppCompatActivity {
 
         toolbar.setTitle(boardname.toUpperCase());
 
-        mAuth = FirebaseAuth.getInstance();
-        User = mAuth.getCurrentUser();
-        assert User != null;
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        assert user != null;
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading...");
 
-        Storage = FirebaseStorage.getInstance();
-        storageRef = Storage.getReference(User.getUid());
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference(user.getUid());
 
         final TextView Archived_count = findViewById(R.id.Archived_count);
         recyclerView = findViewById(R.id.recycle);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        uidref = FirebaseDatabase.getInstance().getReference().child(User.getUid());
+        uidref = FirebaseDatabase.getInstance().getReference().child(user.getUid());
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -128,7 +125,6 @@ public class Lists extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //Getting number of items already have
                 int childerncount = (int) dataSnapshot.getChildrenCount();
 
 
