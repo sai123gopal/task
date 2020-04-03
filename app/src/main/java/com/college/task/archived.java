@@ -47,7 +47,6 @@ public class archived extends AppCompatActivity {
     private final String DUE = "DUE";
     private final String DESC = "DESC";
     private final String ARCHIVED = "ARCHIVED";
-    private final String True = "true";
     private final String False = "false";
 
 
@@ -65,7 +64,6 @@ public class archived extends AppCompatActivity {
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        assert user != null;
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading...");
 
@@ -80,34 +78,12 @@ public class archived extends AppCompatActivity {
             rootref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    int childerncount = (int) dataSnapshot.getChildrenCount();
-                    cardlist = new ArrayList<>();
-                    if (childerncount <= 1) {
-                        Toast.makeText(archived.this, "No cards", Toast.LENGTH_SHORT).show();
-                    } else {
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            String url = ds.child(FILE).getValue(String.class);
-                            String due = ds.child(DUE).getValue(String.class);
-                            String title = ds.child(TITLE).getValue(String.class);
-                            String desc = ds.child(DESC).getValue(String.class);
-                            String archived = ds.child(ARCHIVED).getValue(String.class);
-                            assert archived != null;
-                            if (title != null) {
-                                if (archived.equals(True)) {
-                                    cards card = new cards(url, due, title, desc);
-                                    cardlist.add(card);
-                                }
-                            }
-                        }
-                        cardsadapter = new archivedcards(cardlist);
-                        recyclerView.setAdapter(cardsadapter);
-                    }
-
-
+                    setData(dataSnapshot);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Snackbar.make(recyclerView, "" + databaseError, 4000).show();
                 }
             });
 
@@ -209,6 +185,32 @@ public class archived extends AppCompatActivity {
                 downloadfile = itemView.findViewById(R.id.download);
                 archive.setImageResource(R.drawable.ic_unarchive_black_24dp);
             }
+        }
+    }
+
+    private void setData(DataSnapshot dataSnapshot) {
+        int childerncount = (int) dataSnapshot.getChildrenCount();
+        cardlist = new ArrayList<>();
+        if (childerncount <= 1) {
+            Toast.makeText(archived.this, "No cards", Toast.LENGTH_SHORT).show();
+        } else {
+            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                String url = ds.child(FILE).getValue(String.class);
+                String due = ds.child(DUE).getValue(String.class);
+                String title = ds.child(TITLE).getValue(String.class);
+                String desc = ds.child(DESC).getValue(String.class);
+                String archived = ds.child(ARCHIVED).getValue(String.class);
+                assert archived != null;
+                if (title != null) {
+                    String aTrue = "true";
+                    if (archived.equals(aTrue)) {
+                        cards card = new cards(url, due, title, desc);
+                        cardlist.add(card);
+                    }
+                }
+            }
+            cardsadapter = new archivedcards(cardlist);
+            recyclerView.setAdapter(cardsadapter);
         }
     }
 }
