@@ -3,16 +3,15 @@
 Free your brain from remembering every planning detail.
 
 ## Sign In/Sign Up with different methods
-
-  Email
+##  Email
   
-  Google
+#  Google
   
 <img src="https://github.com/sai123gopal/task/blob/master/screenshots/Screenshot_2020-03-23-10-59-29-481_com.college.task.jpg" width="280px" alt="Screenshot" /><br />
   
-Using Email and password users can log in and registration, when the user registered user will get a confirmation mail for confirming and forgot password with this user, can update new password and log in.
+Using Email and password users can log in and registration, when the user registered, User will get a confirmation mail and forgot password with this user,User can update new password.
 
-Using Google is one tap Sign in/Sign up using Google account automatically we will fetch user data like name, email, and user profile photo.
+Using Google Sign in/Sign up using Google account automatically we will fetch user data like name, email, and user profile photo.
 
 ## Add plan
 First, add board title(3~50) under board add with list add cards.
