@@ -3,9 +3,8 @@
 Free your brain from remembering every planning detail.
 
 ## Sign In/Sign Up with different methods
-##  Email
-  
-#  Google
+###  Email
+###  Google
   
 <img src="https://github.com/sai123gopal/task/blob/master/screenshots/Screenshot_2020-03-23-10-59-29-481_com.college.task.jpg" width="280px" alt="Screenshot" /><br />
   
