@@ -19,3 +19,8 @@ Add plans to list which have Title(50), with auto-reminder and attachment which 
 <img src="screenshots/Screenshot_2020-03-23-11-03-27-008_com.college.task.jpg" width="280px" alt="Screenshot" /><br />
 <img src="screenshots/Screenshot_2020-04-03-19-14-41-440_com.college.task.jpg" width="280px" alt="Screenshot" /><br />
 <img src="screenshots/Screenshot_2020-04-03-19-14-59-955_com.college.task.jpg" width="280px" alt="Screenshot" /><br />
+
+                               Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
